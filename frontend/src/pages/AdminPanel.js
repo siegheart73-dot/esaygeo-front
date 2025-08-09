@@ -271,66 +271,171 @@ const AdminPanel = () => {
 
   const AITab = () => (
     <div className="space-y-6">
-      <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Analyse de contenu IA</h3>
+      <div className="flex items-center justify-between">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+          Modèles d'analyse IA ({aiModels.length})
+        </h3>
+        <button 
+          onClick={() => setAiModelModal({ isOpen: true, model: null })}
+          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center space-x-2"
+        >
+          <Plus size={16} />
+          <span>Nouveau modèle</span>
+        </button>
+      </div>
       
+      {/* AI Models List */}
       <div className="grid gap-4">
-        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6">
-          <h4 className="font-medium text-gray-900 dark:text-white mb-4">Configuration de l'analyse</h4>
-          
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Modèle d'IA
-              </label>
-              <select className="w-full px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:text-white">
-                <option>GPT-4</option>
-                <option>Claude-3</option>
-                <option>Gemini Pro</option>
-              </select>
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Paramètres d'analyse
-              </label>
-              <div className="grid grid-cols-2 gap-4">
-                <label className="flex items-center space-x-2">
-                  <input type="checkbox" className="rounded" defaultChecked />
-                  <span className="text-sm text-gray-700 dark:text-gray-300">Sentiment</span>
-                </label>
-                <label className="flex items-center space-x-2">
-                  <input type="checkbox" className="rounded" defaultChecked />
-                  <span className="text-sm text-gray-700 dark:text-gray-300">Fiabilité</span>
-                </label>
-                <label className="flex items-center space-x-2">
-                  <input type="checkbox" className="rounded" />
-                  <span className="text-sm text-gray-700 dark:text-gray-300">Classification</span>
-                </label>
-                <label className="flex items-center space-x-2">
-                  <input type="checkbox" className="rounded" />
-                  <span className="text-sm text-gray-700 dark:text-gray-300">Résumé automatique</span>
-                </label>
+        {aiModels.map((model) => (
+          <div key={model.id} className="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-4">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center space-x-3">
+                <div className={`w-3 h-3 rounded-full ${model.isActive ? 'bg-green-500' : 'bg-red-500'}`}></div>
+                <div className="flex items-center space-x-2">
+                  <Cpu size={16} className="text-blue-600 dark:text-blue-400" />
+                  <h4 className="font-medium text-gray-900 dark:text-white">{model.name}</h4>
+                </div>
+                <span className="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-2 py-1 rounded text-xs">
+                  {model.provider}
+                </span>
+                <span className="bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 px-2 py-1 rounded text-xs">
+                  {model.usageCount} utilisations
+                </span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <button 
+                  onClick={() => setAiModelModal({ isOpen: true, model })}
+                  className="p-2 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
+                >
+                  <Edit size={16} />
+                </button>
+                <button 
+                  onClick={() => handleDeleteAIModel(model.id)}
+                  className="p-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                >
+                  <Trash2 size={16} />
+                </button>
               </div>
             </div>
             
-            <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
-              Sauvegarder la configuration
-            </button>
+            <div className="grid grid-cols-2 gap-4 mb-3">
+              <div>
+                <p className="text-xs text-gray-500 dark:text-gray-400">Model ID</p>
+                <p className="text-sm font-mono text-gray-700 dark:text-gray-300">{model.modelId}</p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-500 dark:text-gray-400">API Key</p>
+                <p className="text-sm font-mono text-gray-700 dark:text-gray-300">
+                  {model.apiKey.slice(0, 8)}***{model.apiKey.slice(-4)}
+                </p>
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-3 gap-4 mb-3">
+              <div>
+                <p className="text-xs text-gray-500 dark:text-gray-400">Coût/token</p>
+                <p className="text-sm font-medium text-gray-900 dark:text-white">${model.costPerToken}</p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-500 dark:text-gray-400">Max tokens</p>
+                <p className="text-sm font-medium text-gray-900 dark:text-white">{model.maxTokens}</p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-500 dark:text-gray-400">Température</p>
+                <p className="text-sm font-medium text-gray-900 dark:text-white">{model.temperature}</p>
+              </div>
+            </div>
+            
+            <div className="mb-3">
+              <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Fonctionnalités</p>
+              <div className="flex flex-wrap gap-1">
+                {model.features.map((feature, index) => (
+                  <span 
+                    key={index}
+                    className="bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-2 py-1 rounded text-xs capitalize"
+                  >
+                    {feature.replace('-', ' ')}
+                  </span>
+                ))}
+              </div>
+            </div>
+            
+            <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
+              <span>
+                Ajouté: {new Date(model.addedDate).toLocaleDateString('fr-FR')}
+              </span>
+              {model.lastUsed && (
+                <span>
+                  Dernière utilisation: {new Date(model.lastUsed).toLocaleDateString('fr-FR')}
+                </span>
+              )}
+            </div>
           </div>
-        </div>
+        ))}
+      </div>
 
-        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6">
-          <h4 className="font-medium text-gray-900 dark:text-white mb-4">Statistiques récentes</h4>
+      {/* AI Configuration Section */}
+      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6">
+        <h4 className="font-medium text-gray-900 dark:text-white mb-4">Configuration globale</h4>
+        
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Modèle par défaut pour l'analyse
+            </label>
+            <select className="w-full px-3 py-2 bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:text-white">
+              {aiModels.filter(m => m.isActive).map(model => (
+                <option key={model.id} value={model.id}>{model.name}</option>
+              ))}
+            </select>
+          </div>
           
-          <div className="grid grid-cols-2 gap-4">
-            <div className="text-center">
-              <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">1,247</p>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Articles analysés</p>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Paramètres d'analyse automatique
+            </label>
+            <div className="grid grid-cols-2 gap-4">
+              <label className="flex items-center space-x-2">
+                <input type="checkbox" className="rounded" defaultChecked />
+                <span className="text-sm text-gray-700 dark:text-gray-300">Analyse de sentiment</span>
+              </label>
+              <label className="flex items-center space-x-2">
+                <input type="checkbox" className="rounded" defaultChecked />
+                <span className="text-sm text-gray-700 dark:text-gray-300">Vérification des faits</span>
+              </label>
+              <label className="flex items-center space-x-2">
+                <input type="checkbox" className="rounded" />
+                <span className="text-sm text-gray-700 dark:text-gray-300">Classification automatique</span>
+              </label>
+              <label className="flex items-center space-x-2">
+                <input type="checkbox" className="rounded" />
+                <span className="text-sm text-gray-700 dark:text-gray-300">Résumé automatique</span>
+              </label>
             </div>
-            <div className="text-center">
-              <p className="text-2xl font-bold text-green-600 dark:text-green-400">98.3%</p>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Précision moyenne</p>
-            </div>
+          </div>
+          
+          <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+            Sauvegarder la configuration
+          </button>
+        </div>
+      </div>
+
+      {/* Statistics */}
+      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6">
+        <h4 className="font-medium text-gray-900 dark:text-white mb-4">Statistiques d'utilisation</h4>
+        
+        <div className="grid grid-cols-2 gap-4">
+          <div className="text-center">
+            <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+              {aiModels.reduce((sum, model) => sum + model.usageCount, 0).toLocaleString()}
+            </p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Analyses totales</p>
+          </div>
+          <div className="text-center">
+            <p className="text-2xl font-bold text-green-600 dark:text-green-400">
+              {aiModels.filter(m => m.isActive).length}/{aiModels.length}
+            </p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Modèles actifs</p>
           </div>
         </div>
       </div>
