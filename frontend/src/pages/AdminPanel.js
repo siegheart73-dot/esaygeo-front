@@ -590,6 +590,13 @@ const AdminPanel = () => {
         onSave={handleSaveSource}
       />
 
+      <AIModelModal
+        isOpen={aiModelModal.isOpen}
+        onClose={() => setAiModelModal({ isOpen: false, model: null })}
+        model={aiModelModal.model}
+        onSave={handleSaveAIModel}
+      />
+
       <ConfirmModal
         isOpen={confirmModal.isOpen}
         onClose={() => setConfirmModal({ ...confirmModal, isOpen: false })}
