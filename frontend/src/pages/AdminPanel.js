@@ -30,7 +30,7 @@ const AdminPanel = () => {
   });
 
   useEffect(() => {
-    if (!isAdmin) {
+    if (user && !isAdmin) {
       toast({
         title: "Accès refusé",
         description: "Vous n'avez pas les permissions pour accéder à cette page.",
@@ -38,7 +38,7 @@ const AdminPanel = () => {
       });
       navigate('/');
     }
-  }, [isAdmin, navigate, toast]);
+  }, [user, isAdmin, navigate, toast]);
 
   if (!isAdmin) {
     return null;
