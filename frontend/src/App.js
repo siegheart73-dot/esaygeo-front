@@ -1,53 +1,43 @@
-import { useEffect } from "react";
+import React from "react";
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import axios from "axios";
-
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
-
-const Home = () => {
-  const helloWorldApi = async () => {
-    try {
-      const response = await axios.get(`${API}/`);
-      console.log(response.data.message);
-    } catch (e) {
-      console.error(e, `errored out requesting / api`);
-    }
-  };
-
-  useEffect(() => {
-    helloWorldApi();
-  }, []);
-
-  return (
-    <div>
-      <header className="App-header">
-        <a
-          className="App-link"
-          href="https://emergent.sh"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img src="https://avatars.githubusercontent.com/in/1201222?s=120&u=2686cf91179bbafbc7a71bfbc43004cf9ae1acea&v=4" />
-        </a>
-        <p className="mt-5">Building something incredible ~!</p>
-      </header>
-    </div>
-  );
-};
+import { ThemeProvider } from "./contexts/ThemeContext";
+import { AuthProvider } from "./contexts/AuthContext";
+import Navigation from "./components/Navigation";
+import HomePage from "./pages/HomePage";
+import ArticleDetailPage from "./pages/ArticleDetailPage";
+import SearchPage from "./pages/SearchPage";
+import BookmarksPage from "./pages/BookmarksPage";
+import ProfilePage from "./pages/ProfilePage";
+import AuthPage from "./pages/AuthPage";
+import AdminPanel from "./pages/AdminPanel";
+import GlossaryPage from "./pages/GlossaryPage";
+import { Toaster } from "./components/ui/toaster";
 
 function App() {
   return (
-    <div className="App">
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />}>
-            <Route index element={<Home />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </div>
+    <ThemeProvider>
+      <AuthProvider>
+        <div className="App">
+          <BrowserRouter>
+            <div className="min-h-screen bg-background text-foreground">
+              <Routes>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/article/:id" element={<ArticleDetailPage />} />
+                <Route path="/search" element={<SearchPage />} />
+                <Route path="/bookmarks" element={<BookmarksPage />} />
+                <Route path="/profile" element={<ProfilePage />} />
+                <Route path="/auth" element={<AuthPage />} />
+                <Route path="/admin" element={<AdminPanel />} />
+                <Route path="/glossary" element={<GlossaryPage />} />
+              </Routes>
+              <Navigation />
+              <Toaster />
+            </div>
+          </BrowserRouter>
+        </div>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
 
