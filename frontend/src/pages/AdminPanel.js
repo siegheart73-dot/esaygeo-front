@@ -92,7 +92,36 @@ const AdminPanel = () => {
     });
   };
 
-  // Source CRUD functions
+  // AI Models CRUD functions
+  const handleSaveAIModel = (modelData) => {
+    setAiModels(prevModels => {
+      const existingIndex = prevModels.findIndex(m => m.id === modelData.id);
+      if (existingIndex >= 0) {
+        // Update existing model
+        const updated = [...prevModels];
+        updated[existingIndex] = modelData;
+        return updated;
+      } else {
+        // Add new model
+        return [...prevModels, modelData];
+      }
+    });
+  };
+
+  const handleDeleteAIModel = (modelId) => {
+    setConfirmModal({
+      isOpen: true,
+      title: "Supprimer le modèle IA",
+      message: "Êtes-vous sûr de vouloir supprimer ce modèle IA ? Cette action est irréversible et peut affecter les analyses en cours.",
+      onConfirm: () => {
+        setAiModels(prevModels => prevModels.filter(m => m.id !== modelId));
+        toast({
+          title: "Succès",
+          description: "Modèle IA supprimé avec succès !",
+        });
+      }
+    });
+  };
   const handleSaveSource = (sourceData) => {
     setSources(prevSources => {
       const existingIndex = prevSources.findIndex(s => s.id === sourceData.id);
