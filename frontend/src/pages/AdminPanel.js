@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowLeft, Users, Rss, Brain, HeadphonesIcon, Settings, Plus, Edit, Trash2, Eye, EyeOff } from 'lucide-react';
+import { ArrowLeft, Users, Rss, Brain, HeadphonesIcon, Settings, Plus, Edit, Trash2, Eye, EyeOff, Cpu } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { mockUsers, mockSources, mockGlossary } from '../data/mock';
+import { mockUsers, mockSources, mockGlossary, mockAIModels } from '../data/mock';
 import { useToast } from '../hooks/use-toast';
 import UserModal from '../components/modals/UserModal';
 import SourceModal from '../components/modals/SourceModal';
+import AIModelModal from '../components/modals/AIModelModal';
 import ConfirmModal from '../components/modals/ConfirmModal';
 
 const AdminPanel = () => {
