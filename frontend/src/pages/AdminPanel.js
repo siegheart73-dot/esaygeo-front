@@ -4,15 +4,30 @@ import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { mockUsers, mockSources, mockGlossary } from '../data/mock';
 import { useToast } from '../hooks/use-toast';
+import UserModal from '../components/modals/UserModal';
+import SourceModal from '../components/modals/SourceModal';
+import ConfirmModal from '../components/modals/ConfirmModal';
 
 const AdminPanel = () => {
   const { user, isAdmin } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState('users');
+  
+  // Data states
   const [users, setUsers] = useState(mockUsers);
   const [sources, setSources] = useState(mockSources);
   const [glossaryTerms, setGlossaryTerms] = useState(mockGlossary);
+
+  // Modal states
+  const [userModal, setUserModal] = useState({ isOpen: false, user: null });
+  const [sourceModal, setSourceModal] = useState({ isOpen: false, source: null });
+  const [confirmModal, setConfirmModal] = useState({ 
+    isOpen: false, 
+    onConfirm: null, 
+    title: '', 
+    message: '' 
+  });
 
   useEffect(() => {
     if (!isAdmin) {
@@ -37,13 +52,78 @@ const AdminPanel = () => {
     { id: 'glossary', name: 'Glossaire', icon: Settings }
   ];
 
+  // User CRUD functions
+  const handleSaveUser = (userData) => {
+    setUsers(prevUsers => {
+      const existingIndex = prevUsers.findIndex(u => u.id === userData.id);
+      if (existingIndex >= 0) {
+        // Update existing user
+        const updated = [...prevUsers];
+        updated[existingIndex] = userData;
+        return updated;
+      } else {
+        // Add new user
+        return [...prevUsers, userData];
+      }
+    });
+  };
+
+  const handleDeleteUser = (userId) => {
+    setConfirmModal({
+      isOpen: true,
+      title: "Supprimer l'utilisateur",
+      message: "Êtes-vous sûr de vouloir supprimer cet utilisateur ? Cette action est irréversible.",
+      onConfirm: () => {
+        setUsers(prevUsers => prevUsers.filter(u => u.id !== userId));
+        toast({
+          title: "Succès",
+          description: "Utilisateur supprimé avec succès !",
+        });
+      }
+    });
+  };
+
+  // Source CRUD functions
+  const handleSaveSource = (sourceData) => {
+    setSources(prevSources => {
+      const existingIndex = prevSources.findIndex(s => s.id === sourceData.id);
+      if (existingIndex >= 0) {
+        // Update existing source
+        const updated = [...prevSources];
+        updated[existingIndex] = sourceData;
+        return updated;
+      } else {
+        // Add new source
+        return [...prevSources, sourceData];
+      }
+    });
+  };
+
+  const handleDeleteSource = (sourceId) => {
+    setConfirmModal({
+      isOpen: true,
+      title: "Supprimer la source",
+      message: "Êtes-vous sûr de vouloir supprimer cette source ? Cette action est irréversible.",
+      onConfirm: () => {
+        setSources(prevSources => prevSources.filter(s => s.id !== sourceId));
+        toast({
+          title: "Succès",
+          description: "Source supprimée avec succès !",
+        });
+      }
+    });
+  };
+
   const UsersTab = () => (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
           Gestion des utilisateurs ({users.length})
         </h3>
-        <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center space-x-2">
+        <button 
+          onClick={() => setUserModal({ isOpen: true, user: null })}
+          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center space-x-2"
+        >
           <Plus size={16} />
           <span>Nouvel utilisateur</span>
         </button>
@@ -74,10 +154,16 @@ const AdminPanel = () => {
               </span>
             </div>
             <div className="flex items-center space-x-2">
-              <button className="p-2 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors">
+              <button 
+                onClick={() => setUserModal({ isOpen: true, user })}
+                className="p-2 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
+              >
                 <Edit size={16} />
               </button>
-              <button className="p-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors">
+              <button 
+                onClick={() => handleDeleteUser(user.id)}
+                className="p-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+              >
                 <Trash2 size={16} />
               </button>
             </div>
@@ -93,7 +179,10 @@ const AdminPanel = () => {
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
           Sources de news ({sources.length})
         </h3>
-        <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center space-x-2">
+        <button 
+          onClick={() => setSourceModal({ isOpen: true, source: null })}
+          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center space-x-2"
+        >
           <Plus size={16} />
           <span>Nouvelle source</span>
         </button>
@@ -111,10 +200,16 @@ const AdminPanel = () => {
                 </span>
               </div>
               <div className="flex items-center space-x-2">
-                <button className="p-2 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors">
+                <button 
+                  onClick={() => setSourceModal({ isOpen: true, source })}
+                  className="p-2 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
+                >
                   <Edit size={16} />
                 </button>
-                <button className="p-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors">
+                <button 
+                  onClick={() => handleDeleteSource(source.id)}
+                  className="p-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                >
                   <Trash2 size={16} />
                 </button>
               </div>
@@ -336,6 +431,29 @@ const AdminPanel = () => {
       <div className="p-4 pb-24">
         {renderTabContent()}
       </div>
+
+      {/* Modals */}
+      <UserModal
+        isOpen={userModal.isOpen}
+        onClose={() => setUserModal({ isOpen: false, user: null })}
+        user={userModal.user}
+        onSave={handleSaveUser}
+      />
+
+      <SourceModal
+        isOpen={sourceModal.isOpen}
+        onClose={() => setSourceModal({ isOpen: false, source: null })}
+        source={sourceModal.source}
+        onSave={handleSaveSource}
+      />
+
+      <ConfirmModal
+        isOpen={confirmModal.isOpen}
+        onClose={() => setConfirmModal({ ...confirmModal, isOpen: false })}
+        onConfirm={confirmModal.onConfirm}
+        title={confirmModal.title}
+        message={confirmModal.message}
+      />
     </div>
   );
 };
