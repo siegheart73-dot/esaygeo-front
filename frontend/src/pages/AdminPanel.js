@@ -19,10 +19,12 @@ const AdminPanel = () => {
   const [users, setUsers] = useState(mockUsers);
   const [sources, setSources] = useState(mockSources);
   const [glossaryTerms, setGlossaryTerms] = useState(mockGlossary);
+  const [aiModels, setAiModels] = useState(mockAIModels);
 
   // Modal states
   const [userModal, setUserModal] = useState({ isOpen: false, user: null });
   const [sourceModal, setSourceModal] = useState({ isOpen: false, source: null });
+  const [aiModelModal, setAiModelModal] = useState({ isOpen: false, model: null });
   const [confirmModal, setConfirmModal] = useState({ 
     isOpen: false, 
     onConfirm: null, 
