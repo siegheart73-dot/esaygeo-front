@@ -40,8 +40,14 @@ const AdminPanel = () => {
     }
   }, [user, isAdmin, navigate, toast]);
 
-  if (!isAdmin) {
-    return null;
+  if (!user || !isAdmin) {
+    return (
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-gray-600 dark:text-gray-400">Chargement...</p>
+        </div>
+      </div>
+    );
   }
 
   const tabs = [
