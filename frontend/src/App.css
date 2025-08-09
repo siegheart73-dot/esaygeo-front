@@ -1,34 +1,99 @@
-.App-logo {
-    height: 40vmin;
-    pointer-events: none;
+/* Custom scrollbar styles */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-    .App-logo {
-        animation: App-logo-spin infinite 20s linear;
-    }
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }
 
-.App-header {
-    background-color: #0f0f10;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: calc(10px + 2vmin);
-    color: white;
+/* Line clamp utility */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-.App-link {
-    color: #61dafb;
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-@keyframes App-logo-spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
+/* Custom focus ring colors */
+input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Smooth transitions for all interactive elements */
+button, input, select, textarea {
+  transition: all 0.2s ease-in-out;
+}
+
+/* Custom gradient backgrounds */
+.gradient-primary {
+  background: linear-gradient(135deg, #1e293b 0%, #3730a3 50%, #1e293b 100%);
+}
+
+.gradient-card {
+  background: linear-gradient(145deg, rgba(30, 41, 59, 0.8), rgba(55, 48, 163, 0.2));
+}
+
+/* Glass morphism effect */
+.glass-effect {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Dark theme glass effect */
+.dark .glass-effect {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Custom animations */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-up {
+  animation: slideUp 0.3s ease-out;
+}
+
+/* Mobile-first responsive design */
+@media (max-width: 768px) {
+  .mobile-safe-area {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* Image hover effects */
+.image-hover-zoom {
+  transition: transform 0.3s ease-in-out;
+}
+
+.image-hover-zoom:hover {
+  transform: scale(1.05);
+}
+
+/* Custom shadows */
+.shadow-custom {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.dark .shadow-custom {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
