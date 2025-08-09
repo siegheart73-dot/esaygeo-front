@@ -157,3 +157,51 @@ export const mockSources = [
     lastUpdated: "2025-01-15T11:30:00Z"
   }
 ];
+
+export const mockAIModels = [
+  {
+    id: 1,
+    name: "GPT-4 Turbo",
+    provider: "OpenAI",
+    modelId: "gpt-4-turbo-preview",
+    apiKey: "sk-proj-*********************",
+    costPerToken: 0.00003,
+    maxTokens: 4096,
+    temperature: 0.7,
+    isActive: true,
+    features: ["text-analysis", "sentiment", "summarization"],
+    addedDate: "2024-12-01T10:00:00Z",
+    lastUsed: "2025-01-15T14:30:00Z",
+    usageCount: 1247
+  },
+  {
+    id: 2,
+    name: "Claude-3 Sonnet",
+    provider: "Anthropic",
+    modelId: "claude-3-sonnet-20240229",
+    apiKey: "sk-ant-*********************",
+    costPerToken: 0.000025,
+    maxTokens: 4096,
+    temperature: 0.5,
+    isActive: true,
+    features: ["text-analysis", "fact-checking", "classification"],
+    addedDate: "2024-11-15T09:15:00Z",
+    lastUsed: "2025-01-15T13:45:00Z",
+    usageCount: 892
+  },
+  {
+    id: 3,
+    name: "Gemini Pro",
+    provider: "Google",
+    modelId: "gemini-pro",
+    apiKey: "AIzaSy*********************",
+    costPerToken: 0.00002,
+    maxTokens: 2048,
+    temperature: 0.8,
+    isActive: false,
+    features: ["text-analysis", "translation"],
+    addedDate: "2024-10-20T16:20:00Z",
+    lastUsed: "2024-12-10T11:20:00Z",
+    usageCount: 156
+  }
+];
